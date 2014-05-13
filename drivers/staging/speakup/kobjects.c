@@ -876,6 +876,8 @@ static struct kobj_attribute key_echo_attribute =
 	__ATTR(key_echo, USER_RW, spk_var_show, spk_var_store);
 static struct kobj_attribute no_interrupt_attribute =
 	__ATTR(no_interrupt, USER_RW, spk_var_show, spk_var_store);
+	static struct kobj_attribute indent_bleep_attribute =
+	        __ATTR(indent_bleep, USER_RW, spk_var_show, spk_var_store);
 static struct kobj_attribute punc_level_attribute =
 	__ATTR(punc_level, USER_RW, spk_var_show, spk_var_store);
 static struct kobj_attribute reading_punc_attribute =
@@ -927,6 +929,7 @@ static struct attribute *main_attrs[] = {
 	&repeats_attribute.attr,
 	&attrib_bleep_attribute.attr,
 	&bell_pos_attribute.attr,
+		&indent_bleep_attribute.attr,
 	&bleep_time_attribute.attr,
 	&bleeps_attribute.attr,
 	&cursor_time_attribute.attr,

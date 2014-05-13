@@ -32,6 +32,7 @@ static struct st_var_header var_headers[] = {
 	{ "say_control", SAY_CONTROL, VAR_NUM, &spk_say_ctrl, NULL },
 	{ "say_word_ctl", SAY_WORD_CTL, VAR_NUM, &spk_say_word_ctl, NULL },
 	{ "no_interrupt", NO_INTERRUPT, VAR_NUM, &spk_no_intr, NULL },
+	        { "indent_bleep", INDENT_BLEEP, VAR_NUM, &spk_indent_bleep, NULL },
 	{ "key_echo", KEY_ECHO, VAR_NUM, &spk_key_echo, NULL },
 	{ "bell_pos", BELL_POS, VAR_NUM, &spk_bell_pos, NULL },
 	{ "rate", RATE, VAR_NUM, NULL, NULL },

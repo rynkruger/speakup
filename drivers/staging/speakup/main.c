@@ -76,6 +76,7 @@ short spk_pitch_shift, synth_flags;
 static char buf[256];
 int spk_attrib_bleep, spk_bleeps, spk_bleep_time = 10;
 int spk_no_intr, spk_spell_delay;
+int spk_indent_bleep;
 int spk_key_echo, spk_say_word_ctl;
 int spk_say_ctrl, spk_bell_pos;
 short spk_punc_mask;
@@ -752,11 +753,15 @@ static void say_line(struct vc_data *vc)
 		return;
 	}
 	buf[i++] = '\n';
-	if (this_speakup_key == SAY_LINE_INDENT) {
+	if (this_speakup_key == SAY_LINE_INDENT||spk_indent_bleep) {
 		cp = buf;
 		while (*cp == SPACE)
 			cp++;
-		synth_printf("%d, ", (cp - buf) + 1);
+		if (this_speakup_key == SAY_LINE_INDENT) {
+			synth_printf("%d, ", (cp - buf) + 1);
+		} else {
+			bleep((cp - buf));
+		}
 	}
 	spk_punc_mask = spk_punc_masks[spk_reading_punc];
 	spkup_write(buf, i);
@@ -822,9 +827,16 @@ static void say_line_from_to(struct vc_data *vc, u_long from, u_long to,
 	u_long start = vc->vc_origin + (spk_y * vc->vc_size_row);
 	u_long end = start + (to * 2);
 	start += from * 2;
-	if (say_from_to(vc, start, end, read_punc) <= 0)
+	if (say_from_to(vc, start, end, read_punc) <= 0) {
 		if (cursor_track != read_all_mode)
 			synth_printf("%s\n", spk_msg_get(MSG_BLANK));
+	} else if (spk_indent_bleep&&from==0) {
+		u_char tmp;
+		int indent = 0;
+		while ((char)get_char(vc, (u_short *) (start+(indent*2)), &tmp)==SPACE)
+			indent++;
+		bleep(indent);
+	}
 }
 
 /* Sentence Reading Commands */
@@ -1227,6 +1239,7 @@ static struct var_t spk_vars[] = {
 	{SAY_CONTROL, TOGGLE_0},
 	{SAY_WORD_CTL, TOGGLE_0},
 	{NO_INTERRUPT, TOGGLE_0},
+	        {INDENT_BLEEP, TOGGLE_0},
 	{KEY_ECHO, .u.n = {NULL, 1, 0, 2, 0, 0, NULL} },
 	V_LAST_VAR
 };
